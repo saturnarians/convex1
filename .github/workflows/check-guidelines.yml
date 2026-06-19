@@ -1,0 +1,22 @@
+name: "Check Convex Guidelines"
+
+on:
+  pull_request:
+    paths:
+      - 'convex/**'
+
+jobs:
+  require-guidelines:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify guidelines exist
+        run: |
+          if [ ! -f "convex/_generated/ai/guidelines.md" ]; then
+            echo "convex/_generated/ai/guidelines.md is missing. Add the onboarding guidelines file." >&2
+            exit 1
+          fi
+          grep -q "# Convex guidelines" convex/_generated/ai/guidelines.md || (
+            echo "convex/_generated/ai/guidelines.md does not contain the expected header." >&2
+            exit 1
+          )
